@@ -5,6 +5,7 @@ public enum Tipus {
     Sedan,
     Hatchback,
     Pickup,
-    Cabrio,
-    Kombi
+    Convertible,
+    Kombi,
+    Coupe
 }
