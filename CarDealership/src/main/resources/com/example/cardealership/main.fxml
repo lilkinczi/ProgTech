@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.cardealership.MainController">
+    <top>
+        <MenuBar>
+            <Menu fx:id="carTypeMenu" text="Car Types"/>
+        </MenuBar>
+    </top>
+    <center>
+        <ListView fx:id="carListView"/>
+    </center>
+    <right>
+        <VBox spacing="10" padding="10">
+            <Label text="Car Details:"/>
+            <Label fx:id="carDetailsLabel"/>
+            <Label text="Color:"/>
+            <ComboBox fx:id="colorComboBox"/>
+            <CheckBox fx:id="extra1CheckBox" text="Extra 1"/>
+            <CheckBox fx:id="extra2CheckBox" text="Extra 2"/>
+            <Label fx:id="totalPriceLabel"/>
+        </VBox>
+    </right>
+</BorderPane>

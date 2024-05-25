@@ -8,7 +8,7 @@ public abstract class AbstractAutoFacrory {
         this.tipus = tipus;
     }
 
-    public Tipus getMarka() {return tipus;}
+    public Tipus getTipus() {return tipus;}
 
-    public void setMarka() {this.tipus = tipus;}
+    public void setTipus() {this.tipus = tipus;}
 }
