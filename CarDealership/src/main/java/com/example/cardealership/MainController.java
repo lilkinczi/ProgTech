@@ -1,10 +1,11 @@
 package com.example.cardealership;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
 public class MainController {
     @FXML
@@ -28,6 +29,30 @@ public class MainController {
     @FXML
     private Label totalPriceLabel;
 
+    @FXML
+    private AnchorPane detailsPane;
+
+    @FXML
+    private AnchorPane ordersPane;
+
+    @FXML
+    private TableView<Order> ordersTableView;
+
+    @FXML
+    private TableColumn<Order, String> carColumn;
+
+    @FXML
+    private TableColumn<Order, String> colorColumn;
+
+    @FXML
+    private TableColumn<Order, Boolean> extra1Column;
+
+    @FXML
+    private TableColumn<Order, Boolean> extra2Column;
+
+    @FXML
+    private TableColumn<Order, Double> priceColumn;
+
     private Car selectedCar;
 
     public void initialize() {
@@ -43,10 +68,20 @@ public class MainController {
         extra2CheckBox.setOnAction(e -> updateTotalPrice());
 
         carListView.setOnMouseClicked(this::showCarDetails);
+
+        // Set up the orders table columns
+        carColumn.setCellValueFactory(new PropertyValueFactory<>("carName"));
+        colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
+        extra1Column.setCellValueFactory(new PropertyValueFactory<>("extra1"));
+        extra2Column.setCellValueFactory(new PropertyValueFactory<>("extra2"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
     }
 
     private void showCarsByType(CarType type) {
         carListView.getItems().setAll(CarData.getCarsByType(type));
+        carListView.setVisible(true);
+        detailsPane.setVisible(false);
+        ordersPane.setVisible(false);
     }
 
     private void showCarDetails(MouseEvent event) {
@@ -58,7 +93,45 @@ public class MainController {
                             "Base Price: $" + selectedCar.getBasePrice()
             );
             updateTotalPrice();
+            carListView.setVisible(false);
+            detailsPane.setVisible(true);
+            ordersPane.setVisible(false);
         }
+    }
+
+    @FXML
+    private void handleBack() {
+        carListView.setVisible(true);
+        detailsPane.setVisible(false);
+        ordersPane.setVisible(false);
+    }
+
+    @FXML
+    private void handleOrder() {
+        Order order = new Order(
+                selectedCar,
+                colorComboBox.getValue(),
+                extra1CheckBox.isSelected(),
+                extra2CheckBox.isSelected(),
+                Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""))
+        );
+        OrderData.saveOrder(order);
+        handleBack();
+    }
+
+    @FXML
+    private void showOrders() {
+        ordersTableView.setItems(FXCollections.observableArrayList(OrderData.getOrders()));
+        carListView.setVisible(false);
+        detailsPane.setVisible(false);
+        ordersPane.setVisible(true);
+    }
+
+    @FXML
+    private void handleBackToCars() {
+        carListView.setVisible(true);
+        detailsPane.setVisible(false);
+        ordersPane.setVisible(false);
     }
 
     private void updateTotalPrice() {
