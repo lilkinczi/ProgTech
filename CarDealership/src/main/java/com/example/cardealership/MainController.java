@@ -3,9 +3,9 @@ package com.example.cardealership;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class MainController {
     @FXML
@@ -39,7 +39,10 @@ public class MainController {
     private TableView<Order> ordersTableView;
 
     @FXML
-    private TableColumn<Order, String> carColumn;
+    private TableColumn<Order, String> carBrandColumn;
+
+    @FXML
+    private TableColumn<Order, String> carModelColumn;
 
     @FXML
     private TableColumn<Order, String> colorColumn;
@@ -51,7 +54,7 @@ public class MainController {
     private TableColumn<Order, Boolean> extra2Column;
 
     @FXML
-    private TableColumn<Order, Double> priceColumn;
+    private TableColumn<Order, Double> totalPriceColumn;
 
     private Car selectedCar;
 
@@ -69,16 +72,16 @@ public class MainController {
 
         carListView.setOnMouseClicked(this::showCarDetails);
 
-        // Set up the orders table columns
-        carColumn.setCellValueFactory(new PropertyValueFactory<>("carName"));
+        carBrandColumn.setCellValueFactory(new PropertyValueFactory<>("carBrand"));
+        carModelColumn.setCellValueFactory(new PropertyValueFactory<>("carModel"));
         colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
         extra1Column.setCellValueFactory(new PropertyValueFactory<>("extra1"));
         extra2Column.setCellValueFactory(new PropertyValueFactory<>("extra2"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+        totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
     }
 
     private void showCarsByType(CarType type) {
-        carListView.getItems().setAll(CarData.getCarsByType(type));
+        carListView.getItems().setAll(DatabaseConnection.getCarsByType(type));
         carListView.setVisible(true);
         detailsPane.setVisible(false);
         ordersPane.setVisible(false);
@@ -115,13 +118,13 @@ public class MainController {
                 extra2CheckBox.isSelected(),
                 Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""))
         );
-        OrderData.saveOrder(order);
+        DatabaseConnection.saveOrder(order);
         handleBack();
     }
 
     @FXML
     private void showOrders() {
-        ordersTableView.setItems(FXCollections.observableArrayList(OrderData.getOrders()));
+        ordersTableView.setItems(FXCollections.observableArrayList(DatabaseConnection.getOrders()));
         carListView.setVisible(false);
         detailsPane.setVisible(false);
         ordersPane.setVisible(true);
@@ -135,19 +138,11 @@ public class MainController {
     }
 
     private void updateTotalPrice() {
-        if (selectedCar == null) return;
-
-        double totalPrice = selectedCar.getBasePrice();
-        if (colorComboBox.getValue() != null) {
-            totalPrice += 500; // Assume each color adds a flat $500
+        if (selectedCar != null && colorComboBox.getValue() != null) {
+            double totalPrice = selectedCar.getBasePrice();
+            if (extra1CheckBox.isSelected()) totalPrice += 1000; // Példa extra költség
+            if (extra2CheckBox.isSelected()) totalPrice += 1500; // Példa extra költség
+            totalPriceLabel.setText("Total Price: $" + totalPrice);
         }
-        if (extra1CheckBox.isSelected()) {
-            totalPrice += 1000; // Example extra 1 adds $1000
-        }
-        if (extra2CheckBox.isSelected()) {
-            totalPrice += 1500; // Example extra 2 adds $1500
-        }
-
-        totalPriceLabel.setText("Total Price: $" + totalPrice);
     }
 }
