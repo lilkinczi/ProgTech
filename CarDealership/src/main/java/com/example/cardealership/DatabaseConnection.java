@@ -17,14 +17,14 @@ public class DatabaseConnection {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public static List<Car> getCarsByType(CarType type) {
+    public static List<Car> getCarsByType(String type) { // Assuming CarType is no longer used
         List<Car> cars = new ArrayList<>();
-        String sql = "SELECT * FROM cars WHERE brand = ?";
+        String sql = "SELECT * FROM auto WHERE tipus = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, type.name());
+            stmt.setString(1, type);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                cars.add(new Car(rs.getInt("auto_id"), rs.getString("brand"), rs.getString("model"), rs.getDouble("base_price")));
+                cars.add(new Car(rs.getInt("auto_id"), rs.getString("gyarto"), rs.getString("nev"), rs.getDouble("ar")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,13 +33,16 @@ public class DatabaseConnection {
     }
 
     public static void saveOrder(Order order) {
-        String sql = "INSERT INTO orders (car_id, color, extra1, extra2, total_price) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO oreders (auto_id, szin, napfenyteto, automata_valto, 2zonas_klima, ulesfutes, tolatokamera, teljes_ar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, order.getCar().getId());
             stmt.setString(2, order.getColor());
-            stmt.setBoolean(3, order.isExtra1());
-            stmt.setBoolean(4, order.isExtra2());
-            stmt.setDouble(5, order.getTotalPrice());
+            stmt.setBoolean(3, order.isSunroof());
+            stmt.setBoolean(4, order.isAutomaticTransmission());
+            stmt.setBoolean(5, order.isDualZoneClimateControl());
+            stmt.setBoolean(6, order.isSeatHeating());
+            stmt.setBoolean(7, order.isBackupCamera());
+            stmt.setDouble(8, order.getTotalPrice());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,12 +51,12 @@ public class DatabaseConnection {
 
     public static List<Order> getOrders() {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT o.*, c.brand, c.model FROM orders o JOIN cars c ON o.car_id = c.id";
+        String sql = "SELECT o.*, a.gyarto, a.nev FROM oreders o JOIN auto a ON o.auto_id = a.auto_id";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Car car = new Car(rs.getInt("car_id"), rs.getString("brand"), rs.getString("model"), rs.getDouble("base_price"));
-                Order order = new Order(car, rs.getString("color"), rs.getBoolean("extra1"), rs.getBoolean("extra2"), rs.getDouble("total_price"));
+                Car car = new Car(rs.getInt("auto_id"), rs.getString("gyarto"), rs.getString("nev"), rs.getDouble("ar"));
+                Order order = new Order(car, rs.getString("szin"), rs.getBoolean("napfenyteto"), rs.getBoolean("automata_valto"), rs.getBoolean("2zonas_klima"), rs.getBoolean("ulesfutes"), rs.getBoolean("tolatokamera"), rs.getDouble("teljes_ar"));
                 orders.add(order);
             }
         } catch (SQLException e) {
