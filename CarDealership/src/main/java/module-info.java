@@ -6,4 +6,8 @@ module com.example.cardealership {
 
     opens com.example.cardealership to javafx.fxml;
     exports com.example.cardealership;
+    exports com.example.cardealership.car;
+    opens com.example.cardealership.car to javafx.fxml;
+    exports com.example.cardealership.order;
+    opens com.example.cardealership.order to javafx.fxml;
 }

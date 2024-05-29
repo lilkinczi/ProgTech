@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cardealership.CarEditorController">
+    <children>
+        <TextField fx:id="gyartoField" layoutX="100.0" layoutY="50.0" promptText="Gyártó" />
+        <TextField fx:id="nevField" layoutX="100.0" layoutY="100.0" promptText="Név" />
+        <TextField fx:id="tipusField" layoutX="100.0" layoutY="150.0" promptText="Típus" />
+        <TextField fx:id="arField" layoutX="100.0" layoutY="200.0" promptText="Ár" />
+        <Button layoutX="100.0" layoutY="250.0" mnemonicParsing="false" onAction="#handleSave" text="Mentés" />
+        <Button layoutX="200.0" layoutY="250.0" mnemonicParsing="false" onAction="#handleCancel" text="Mégse" />
+        <Label fx:id="errorLabel" layoutX="100.0" layoutY="300.0" textFill="red" />
+    </children>
+</AnchorPane>

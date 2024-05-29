@@ -3,48 +3,50 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cardealership.MainController">
-    <top>
-        <MenuBar>
-            <Menu fx:id="carTypeMenu" text="Car Types" />
-            <Menu text="Orders">
-                <MenuItem onAction="#showOrders" text="View Orders" />
-            </Menu>
-        </MenuBar>
-    </top>
-    <center>
-        <AnchorPane>
-            <ListView fx:id="carListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <AnchorPane fx:id="detailsPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Label layoutX="10" layoutY="10" text="Car Details:" />
-                <Label fx:id="carDetailsLabel" layoutX="100" layoutY="10" />
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="com.example.cardealership.MainController">
+    <MenuBar>
+        <Menu fx:id="carTypeMenu" text="Car Types" />
+        <Menu text="Orders">
+            <MenuItem onAction="#showOrders" text="View Orders" />
+        </Menu>
+        <Menu text="Add car">
 
-                <Label layoutX="10" layoutY="50" text="Color:" />
-                <ComboBox fx:id="colorComboBox" layoutX="100" layoutY="50" />
+        </Menu>
+    </MenuBar>
 
-                <CheckBox fx:id="extra1CheckBox" layoutX="10" layoutY="90" text="Extra 1" />
-                <CheckBox fx:id="extra2CheckBox" layoutX="100" layoutY="90" text="Extra 2" />
+    <ListView fx:id="carListView" layoutX="10.0" layoutY="30.0" prefHeight="600.0" prefWidth="800.0" />
+    <Button fx:id="addButton" layoutX="35.0" layoutY="640.0" mnemonicParsing="false" text="Add Car" onAction="#handleAddCar" />
 
-                <Label fx:id="totalPriceLabel" layoutX="10" layoutY="130" />
 
-                <HBox layoutX="10" layoutY="170" spacing="10">
-                    <Button onAction="#handleBack" text="Back" />
-                    <Button onAction="#handleOrder" text="Order" />
-                </HBox>
-            </AnchorPane>
-            <AnchorPane fx:id="ordersPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                <Label layoutX="10" layoutY="10" text="Orders:" />
-                <TableView fx:id="ordersTableView" layoutX="10" layoutY="30" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0">
-                    <columns>
-                        <TableColumn fx:id="carColumn" text="Car" />
-                        <TableColumn fx:id="colorColumn" text="Color" />
-                        <TableColumn fx:id="extra1Column" text="Extra 1" />
-                        <TableColumn fx:id="extra2Column" text="Extra 2" />
-                        <TableColumn fx:id="priceColumn" text="Total Price" />
-                    </columns>
-                </TableView>
-                <Button layoutX="70" layoutY="5" onAction="#handleBackToCars" text="Back to Cars" />
-            </AnchorPane>
-        </AnchorPane>
-    </center>
-</BorderPane>
+    <AnchorPane fx:id="detailsPane" layoutX="10.0" layoutY="30.0" prefHeight="600.0" prefWidth="800.0" visible="false">
+        <Label fx:id="carDetailsLabel" layoutX="10.0" layoutY="10.0" />
+        <ComboBox fx:id="colorComboBox" layoutX="10.0" layoutY="80.0" promptText="Select Color" />
+        <CheckBox fx:id="extra1CheckBox" layoutX="10.0" layoutY="120.0" text="Napfenytető (+100 000)" />
+        <CheckBox fx:id="extra2CheckBox" layoutX="10.0" layoutY="150.0" text="Automata Váltó (+200 000)" />
+        <CheckBox fx:id="extra3CheckBox" layoutX="10.0" layoutY="180.0" text="2 Zónás Klíma (+50 000)" />
+        <CheckBox fx:id="extra4CheckBox" layoutX="10.0" layoutY="210.0" text="Ülésfűtés (+20 000)" />
+        <CheckBox fx:id="extra5CheckBox" layoutX="10.0" layoutY="240.0" text="Tolatókamera (+30 000)" />
+        <Label fx:id="totalPriceLabel" layoutX="10.0" layoutY="270.0" text="Total Price: " />
+        <Button layoutX="10.0" layoutY="300.0" onAction="#placeOrder" text="Place Order" />
+        <Button layoutX="110.0" layoutY="300.0" onAction="#backToList" text="Back" />
+        <Button fx:id="deleteButton" layoutX="110.0" layoutY="340.0" mnemonicParsing="false" text="Delete Car" onAction="#handleDeleteCar" />
+        <Button fx:id="editButton" layoutX="10.0" layoutY="340.0" mnemonicParsing="false" text="Edit Car" onAction="#handleEditCar"/>
+    </AnchorPane>
+
+    <AnchorPane fx:id="ordersPane" layoutX="10.0" layoutY="30.0" prefHeight="600.0" prefWidth="800.0" visible="false">
+        <TableView fx:id="ordersTableView" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="650.0">
+            <columns>
+                <TableColumn fx:id="carBrandColumn" text="Brand" />
+                <TableColumn fx:id="carModelColumn" text="Model" />
+                <TableColumn fx:id="colorColumn" text="Color" />
+                <TableColumn fx:id="extra1Column" text="Napfenytető" />
+                <TableColumn fx:id="extra2Column" text="Automata Váltó" />
+                <TableColumn fx:id="extra3Column" text="2 Zónás Klíma" />
+                <TableColumn fx:id="extra4Column" text="Ülésfűtés" />
+                <TableColumn fx:id="extra5Column" text="Tolatókamera" />
+                <TableColumn fx:id="totalPriceColumn" text="Total Price" />
+            </columns>
+        </TableView>
+        <Button layoutX="10.0" layoutY="560.0" onAction="#backToList" text="Back" />
+    </AnchorPane>
+</AnchorPane>
