@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.sql.PreparedStatement;
-
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
@@ -75,23 +73,19 @@ public class MainController {
     private Menu carTypeMenu;
     @FXML
     private Button addButton;
-
     @FXML
     private Button deleteButton;
-
     @FXML
     private Button editButton;
 
     private boolean isAdmin;
-
+    private String username;
     private Car selectedCar;
     private ObservableList<Car> carList = FXCollections.observableArrayList();
-
 
     @FXML
     public void initialize() {
         loadCarTypes();
-
         colorComboBox.getItems().addAll("Red", "Blue", "Green", "Black", "White");
 
         extra1CheckBox.setOnAction(e -> updateTotalPrice());
@@ -111,8 +105,11 @@ public class MainController {
         extra4Column.setCellValueFactory(new PropertyValueFactory<>("ulesfutes"));
         extra5Column.setCellValueFactory(new PropertyValueFactory<>("tolatokamera"));
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("teljesAr"));
+        setUser(username,Main.isAdmin());
     }
+
     public void setUser(String username, boolean isAdmin) {
+        this.username = username;
         this.isAdmin = isAdmin;
         toggleAdminControls(isAdmin);
     }
@@ -181,7 +178,6 @@ public class MainController {
 
     @FXML
     private void placeOrder() {
-        String username = LoginController.getUsername();
         if (selectedCar != null) {
             String color = colorComboBox.getValue();
             boolean extra1 = extra1CheckBox.isSelected();
@@ -189,16 +185,20 @@ public class MainController {
             boolean extra3 = extra3CheckBox.isSelected();
             boolean extra4 = extra4CheckBox.isSelected();
             boolean extra5 = extra5CheckBox.isSelected();
-            double totalPrice = new ExtraDecorator(new ExtraDecorator(new ExtraDecorator(new ExtraDecorator(new ExtraDecorator(new ColorDecorator(selectedCar, color), "Napfenyteto", extra1 ? 1500 : 0), "Automata Valto", extra2 ? 2000 : 0), "2 Zonas Klima", extra3 ? 1200 : 0), "Ulesfutes", extra4 ? 1000 : 0), "Tolatokamera", extra5 ? 800 : 0).getPrice();
-            Order order = new Order(DatabaseConnection.getUserID(username), selectedCar, extra1, extra2, extra3, extra4, extra5, color, totalPrice); // 1 as user ID should be dynamic based on logged-in user
+            double totalPrice = new ExtraDecorator(new ExtraDecorator(new ExtraDecorator(new ExtraDecorator(new ExtraDecorator(new ColorDecorator(selectedCar, color), "Napfenyteto", extra1 ? 100000 : 0), "Automata Valto", extra2 ? 200000 : 0), "2 Zonas Klima", extra3 ? 50000 : 0), "Ulesfutes", extra4 ? 20000 : 0), "Tolatokamera", extra5 ? 30000 : 0).getPrice();
+            Order order = new Order(DatabaseConnection.getUserID(username), selectedCar.getAuto_Id(), selectedCar.getBrand(), selectedCar.getModel(), extra1, extra2, extra3, extra4, extra5, color, totalPrice);
             DatabaseConnection.saveOrder(order);
             showOrders();
         }
     }
-
     @FXML
     private void showOrders() {
-        List<Order> orders = DatabaseConnection.getOrders();
+        List<Order> orders;
+        if (isAdmin) {
+            orders = DatabaseConnection.getOrders();
+        } else {
+            orders = DatabaseConnection.getUserOrders(LoginController.getUsername());
+        }
         ordersTableView.setItems(FXCollections.observableArrayList(orders));
         carListView.setVisible(false);
         detailsPane.setVisible(false);
@@ -285,10 +285,9 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void backToList() {
         showCars();
     }
-
-
 }

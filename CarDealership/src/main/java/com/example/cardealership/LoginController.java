@@ -4,12 +4,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoginController {
 
@@ -25,8 +30,13 @@ public class LoginController {
     @FXML
     private Button registerButton;
 
+    private Stage dialogStage;
     private static String username;
+    private boolean isAdmin = false;
 
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
+    }
     @FXML
     public void initialize() {
         loginButton.setOnMouseClicked(event -> handleLogin());
@@ -41,23 +51,37 @@ public class LoginController {
         username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (DatabaseConnection.validateUser(username, password)) {
-            try {
-                Stage stage = (Stage) loginButton.getScene().getWindow();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
-                Parent root = loader.load();
+        if (isLoginValid(username, password)) {
+            Main.setCurrentUser(username, isAdmin);
+            dialogStage.close();
+            Main.showMainView();
 
-                MainController mainController = loader.getController();
-                mainController.setUser(username, DatabaseConnection.isAdmin(username));
-
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         } else {
-            System.out.println("Helytelen felhasználónév vagy jelszó!");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(dialogStage);
+            alert.setTitle("Hiba");
+            alert.setHeaderText("Sikertelen bejelentkezés");
+            alert.setContentText("Érvénytelen felhasználónév vagy jelszó.");
+            alert.showAndWait();
         }
+    }
+
+    private boolean isLoginValid(String username, String password) {
+        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/progtech", "root", "");
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    isAdmin = rs.getBoolean("admin");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void handleRegisterButtonClick() {

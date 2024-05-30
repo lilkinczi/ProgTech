@@ -9,9 +9,6 @@
         <Menu text="Orders">
             <MenuItem onAction="#showOrders" text="View Orders" />
         </Menu>
-        <Menu text="Add car">
-
-        </Menu>
     </MenuBar>
 
     <ListView fx:id="carListView" layoutX="10.0" layoutY="30.0" prefHeight="600.0" prefWidth="800.0" />

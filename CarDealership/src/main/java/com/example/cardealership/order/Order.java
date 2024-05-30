@@ -5,20 +5,24 @@ import com.example.cardealership.car.Car;
 public class Order {
     private int orderId;
     private int userId;
+    private int autoId;
+    private String gyarto;
+    private String nev;
+    private String szin;
     private Car car;
-    private int auto_id;
     private boolean napfenyteto;
     private boolean automataValto;
     private boolean zonasKlima;
     private boolean ulesfutes;
     private boolean tolatokamera;
-    private String szin;
     private double teljesAr;
 
-    public Order( int userId, Car car, boolean napfenyteto, boolean automataValto, boolean zonasKlima,
-                 boolean ulesfutes, boolean tolatokamera, String szin, double teljesAr) {
+    public Order(int userId, int autoId, String gyarto, String nev, boolean napfenyteto, boolean automataValto,
+                 boolean zonasKlima, boolean ulesfutes, boolean tolatokamera, String szin, double teljesAr) {
         this.userId = userId;
-        this.car = car;
+        this.autoId = autoId;
+        this.gyarto = gyarto;
+        this.nev = nev;
         this.napfenyteto = napfenyteto;
         this.automataValto = automataValto;
         this.zonasKlima = zonasKlima;
@@ -36,8 +40,16 @@ public class Order {
         return userId;
     }
 
-    public Car getCar() {
-        return car;
+    public int getAutoId() {
+        return autoId;
+    }
+
+    public String getGyarto() {
+        return gyarto;
+    }
+
+    public String getNev() {
+        return nev;
     }
 
     public boolean isNapfenyteto() {
